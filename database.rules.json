@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "presence": {
+      "$roomId": {
+        "$uid": {
+          ".read": "auth != null && auth.uid == $uid",
+          ".write": "auth != null && auth.uid == $uid"
+        }
+      }
+    },
+    "turnTimers": {
+      "$roundId": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.firebase.sign_in_provider == 'custom'"
+      }
+    }
+  }
+}

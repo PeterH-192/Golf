@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuth() { return request.auth != null; }
+
+    match /rooms/{roomId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if isAuth() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    match /rounds/{roundId} {
+      allow read: if isAuth();
+      allow write: if false; // server-authoritative
+      match /private/{uid} {
+        allow read: if isAuth() && request.auth.uid == uid;
+        allow write: if false;
+      }
+    }
+  }
+}
